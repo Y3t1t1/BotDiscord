@@ -1,0 +1,25 @@
+{
+    "Tirages":
+    [
+        {"Tirage":1, 
+            "Cartes":
+            [
+                {"Score":2, "Type":"Tiroir", "desc": "permet de prendre deux jouet du tiroir 1 ou 1 jouet du tiroir 3 et de les distribuer en échange de cette carte. (interdiction de faire retirer ou déplacer un vêtement pour distribuer un jouet)"},
+                {"Score":3, "Type":"Tiroir", "desc": "permet de prendre trois jouet du tiroir 2 et de les distribuer en échange de cette carte. (interdiction de faire retirer ou déplacer un vêtement pour distribuer un jouet)"}
+            ]
+        },
+        {"Tirage":2, 
+            "Cartes":
+            [
+                {"Score":1, "Type":"Action", "desc": "Vole : permet de voler un jouet sur la table ou sur une autre personnes."},
+                {"Score":2, "Type":"Action", "desc": "Téter : permet de choisir qui doit téter qui pendant 2 minutes."}
+            ]
+        },
+        {"Tirage":3, 
+            "Cartes":
+            [
+                {"Score":1, "Type":"Action", "desc": "Préliminaire : permet de choisir qui doit lécher qui pendant 10 minutes."}
+            ]
+        }
+    ]
+}
