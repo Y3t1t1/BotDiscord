@@ -1,8 +1,8 @@
 import code
 from ntpath import join
 import discord
-import youtube_dl 
-#pip install youtube_dl (2021.12.17)
+import yt_dlp 
+#import youtube_dl #bof vitesse de dl pourrie #pip install youtube_dl (2021.12.17)
 from datetime import datetime
 import os
 import random
@@ -39,7 +39,7 @@ ffmpeg_options = {
     'options': '-vn'
 }
 
-ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
+ytdl = yt_dlp.YoutubeDL(ytdl_format_options)
 
 class YTDLSource(discord.PCMVolumeTransformer):
     def __init__(self, source, *, data, volume=0.5):
@@ -208,7 +208,7 @@ async def load(ctx, url : str):
         return
 
     ydl_opts = {
-        'format': 'bestaudio/best',
+        'format': 'bestaudio/best', #'bestaudio/best', 'worstaudio/worst'
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
@@ -216,7 +216,7 @@ async def load(ctx, url : str):
         }],
     }
 
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
 
     filename = ''
@@ -232,6 +232,8 @@ async def load(ctx, url : str):
     sout = ':notes: file loaded: ' + filename
     await channel.send(sout)
 
+    await play(ctx)
+
     
  
 
@@ -239,11 +241,27 @@ async def play(ctx):
     print('in play', os.path)
     
     
-    
     print('now play')
-    voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='voc-dev')
+
+    voiceChannel = await getuservoicechannel(ctx)
+
+    if voiceChannel == None:
+        voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='voc-dev')
     
-    await voiceChannel.connect()
+    botvoicechannel = await getuseridvoicechannel(942539082574204929)
+
+    if voiceChannel != None:
+        print('user voice channel != None')
+
+        if botvoicechannel != None:
+            print('bot voice channel != None')
+
+        if voiceChannel != botvoicechannel:
+            print('try connection')
+            await voiceChannel.connect()
+
+    
+    
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     voice.play(discord.FFmpegPCMAudio("song.mp3"))
 
@@ -292,6 +310,41 @@ async def stream(ctx, url):
         voice.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
 
         #await ctx.send(f'Now playing: {player.title}')
+
+async def getuservoicechannel(ctx):
+    print('in getuservoicechannel')
+    user = await client.fetch_user(ctx.author.id)
+    print(user.name)
+    print(user.id)
+    voiceChannel = None
+    for guild in client.guilds:
+        #print(guild.name)
+        #print('###')
+        for member in guild.members:  
+            #print(member.id)
+            #print('---') 
+            if member.id == user.id:
+                #print('match!!!')
+                if member.voice != None:
+                    voiceChannel = member.voice.channel
+        
+    return voiceChannel
+
+async def getuseridvoicechannel(ctx):
+    print('in getuserIDvoicechannel')
+    voiceChannel = None
+    for guild in client.guilds:
+        #print(guild.name)
+        #print('###')
+        for member in guild.members:  
+            #print(member.id)
+            #print('---') 
+            if member.id == ctx:
+                #print('match!!!')
+                if member.voice != None:
+                    voiceChannel = member.voice.channel
+        
+    return voiceChannel
 
 #print('token: ' + jsonsecret['token'])
 
